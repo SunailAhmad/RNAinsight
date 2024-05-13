@@ -263,8 +263,8 @@ def Gene_Pathway(res):
                     cutoff=0.05)
 
     st.write(res.results)
-    barplot(res.results, top_term=10, figsize=(8, 6), title='Enrichment Analysis',
-        save='barplot.png')
+    # barplot(res.results, top_term=10, figsize=(8, 6), title='Enrichment Analysis',
+    #     save='barplot.png')
     
 
             
