@@ -38,6 +38,7 @@ def load_lottieurl(url:str):
 
 
 def data_description(df):
+    
     # Define the number of columns
     num_columns = 2
     # Calculate the number of sections
@@ -230,47 +231,33 @@ def pca(res):
         return None
 
 def Gene_Pathway(res):
+    # Convert the 'Symbol' column to string and get unique gene symbols
     all_symbols_list = res['Symbol'].astype(str).unique().tolist()
-    res_enrichr = gseapy.enrichr(gene_list=all_symbols_list,
-                                  gene_sets='GO_Biological_Process_2021',
-                                  cutoff=0.05)
 
-    st.write(res_enrichr.results)
-    barplot(res_enrichr.results, top_term=10, figsize=(8, 6), title='Enrichment Analysis',
-            save='barplot.png')
+    try:
+        # Perform enrichment analysis
+        res_enrichr = gseapy.enrichr(gene_list=all_symbols_list,
+                                     gene_sets='GO_Biological_Process_2021',
+                                     cutoff=0.05)
 
-    all_symbols_list = res['Symbol'].unique().tolist()
-    res_enrichr2 = gseapy.enrichr(gene_list=all_symbols_list,
-                                   gene_sets='GO_Biological_Process_2021',
-                                   cutoff=0.05)
+        # Check if results are obtained
+        if res_enrichr is None or res_enrichr.results.empty:
+            st.write("No significant enrichment results found.")
+            return
+        
+        # Display enrichment results table
+        st.write(res_enrichr.results)
+        
+       
+    except Exception as e:
+        st.error(f"An error occurred during gene pathway analysis: {e}")
 
-    st.write(res_enrichr2.results)
-    barplot(res_enrichr2.results, top_term=10, figsize=(8, 6), title='Enrichment Analysis',
-            save='barplot.png')
-
-    all_symbols_list = res['Symbol'].astype(str).unique().tolist()
-    res = gseapy.enrichr(gene_list=all_symbols_list,
-                    gene_sets='GO_Biological_Process_2021',
-                    cutoff=0.05)
-
-    st.write(res.results)
-    barplot(res.results, top_term=10, figsize=(8, 6), title='Enrichment Analysis',
-        save='barplot.png')
-
-    all_symbols_list = res['Symbol'].unique().tolist()
-    res = gseapy.enrichr(gene_list=all_symbols_list,
-                    gene_sets='GO_Biological_Process_2021',
-                    cutoff=0.05)
-
-    st.write(res.results)
-
-    
 
             
 
 
 def display_guide():
-    st.title("Welcome to RNAseqInsight")
+    st.title("Welcome to SSBPRNAseq Analyzer")
     st.subheader("Guide for Using the App")
     st.write("1. Upload your RNA-seq data file in CSV or TXT format using the file uploader on the left sidebar.")
     st.write("2. After uploading the file, choose an analysis option from the sidebar to perform different analyses on your data.")
